@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>A Rollbar sink for Serilog</Description>
+    <VersionPrefix>1.0.0</VersionPrefix>
+    <Authors>Oleg Shevchenko</Authors>
+    <TargetFrameworks>netstandard2.0;net45</TargetFrameworks>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <AssemblyName>Serilog.Sinks.Rollbar</AssemblyName>
+    
+    <PackageId>Serilog.Sinks.Rollbar</PackageId>
+    <PackageTags>serilog;rollbar;logging</PackageTags>
+    <PackageReleaseNotes>https://github.com/olsh/serilog-sinks-rollbar/releases</PackageReleaseNotes>
+    <PackageProjectUrl>https://github.com/olsh/serilog-sinks-rollbar</PackageProjectUrl>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/olsh/serilog-sinks-rollbar/master/LICENSE</PackageLicenseUrl>
+    <PackageIconUrl>http://serilog.net/images/serilog-sink-nuget.png</PackageIconUrl>
+
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/olsh/serilog-sinks-rollbar</RepositoryUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Serilog" Version="2.0.0" />
+    <PackageReference Include="Rollbar" Version="1.0.3" />
+  </ItemGroup>
+
+</Project>
