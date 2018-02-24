@@ -17,7 +17,7 @@ namespace Serilog.Sinks.RollbarCom
     {
         private readonly IFormatProvider _formatProvider;
 
-        private readonly global::Rollbar.ILogger _rollbar;
+        private readonly Rollbar.ILogger _rollbar;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="RollbarSink" /> class.
@@ -99,8 +99,8 @@ namespace Serilog.Sinks.RollbarCom
         }
 
         private void Log(
-            Func<string, IDictionary<string, object>, global::Rollbar.ILogger> logMessage,
-            Func<Exception, IDictionary<string, object>, global::Rollbar.ILogger> logException,
+            Func<string, IDictionary<string, object>, Rollbar.ILogger> logMessage,
+            Func<Exception, IDictionary<string, object>, Rollbar.ILogger> logException,
             LogEvent logEvent)
         {
             IDictionary<string, object> properties = null;
