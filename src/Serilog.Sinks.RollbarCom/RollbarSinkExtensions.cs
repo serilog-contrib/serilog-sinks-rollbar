@@ -5,7 +5,7 @@ using Rollbar.DTOs;
 using Serilog.Configuration;
 using Serilog.Events;
 
-namespace Serilog.Sinks.Rollbar
+namespace Serilog.Sinks.RollbarCom
 {
     /// <summary>
     ///     Contains extension methods for Serilog configuration.

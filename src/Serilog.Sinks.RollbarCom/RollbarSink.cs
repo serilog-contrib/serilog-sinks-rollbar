@@ -10,7 +10,7 @@ using Serilog.Events;
 
 using Exception = System.Exception;
 
-namespace Serilog.Sinks.Rollbar
+namespace Serilog.Sinks.RollbarCom
 {
     /// <inheritdoc />
     public class RollbarSink : ILogEventSink

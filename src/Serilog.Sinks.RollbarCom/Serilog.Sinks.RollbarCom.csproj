@@ -6,9 +6,9 @@
     <Authors>Oleg Shevchenko</Authors>
     <TargetFrameworks>netstandard2.0;net45</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <AssemblyName>Serilog.Sinks.Rollbar</AssemblyName>
+    <AssemblyName>Serilog.Sinks.RollbarCom</AssemblyName>
     
-    <PackageId>Serilog.Sinks.Rollbar</PackageId>
+    <PackageId>Serilog.Sinks.RollbarCom</PackageId>
     <PackageTags>serilog;rollbar;logging</PackageTags>
     <PackageReleaseNotes>https://github.com/olsh/serilog-sinks-rollbar/releases</PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/olsh/serilog-sinks-rollbar</PackageProjectUrl>

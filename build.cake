@@ -1,8 +1,8 @@
 var target = Argument("target", "Default");
-var projectName = Argument("project", "Serilog.Sinks.Rollbar");
+var projectName = Argument("project", "Serilog.Sinks.RollbarCom");
 
 var buildConfiguration = "Release";
-var solutionName = "Serilog.Sinks.Rollbar";
+var solutionName = "Serilog.Sinks.RollbarCom";
 var solutionFileName = string.Format("./src/{0}.sln", solutionName);
 var projectFolder = string.Format("./src/{0}/", projectName);
 var projectFile = string.Format("{0}{1}.csproj", projectFolder, projectName);
