@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <Description>A Rollbar sink for Serilog</Description>
-    <VersionPrefix>1.0.0</VersionPrefix>
+    <VersionPrefix>1.0.1</VersionPrefix>
     <Authors>Oleg Shevchenko</Authors>
     <TargetFrameworks>netstandard2.0;net45</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -17,6 +17,7 @@
 
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/olsh/serilog-sinks-rollbar</RepositoryUrl>
+    <RootNamespace>Serilog</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
