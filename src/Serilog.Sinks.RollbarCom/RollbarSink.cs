@@ -52,13 +52,12 @@ namespace Serilog
 
             _formatProvider = formatProvider;
 
-            var rollbarConfig = new RollbarConfig(accessToken) { Transform = transform, ProxyAddress = proxyAddress };
-
-            rollbarConfig.Server = new Server
-            {
-                {Server.ReservedProperties.Host, Environment.MachineName},
-                {Server.ReservedProperties.CodeVersion, Assembly.GetEntryAssembly()?.GetName()?.Version?.ToString()}
-            };
+            var serverConfig = new Server
+                                   {
+                                       { Server.ReservedProperties.Host, Environment.MachineName },
+                                       { Server.ReservedProperties.CodeVersion, Assembly.GetEntryAssembly()?.GetName().Version?.ToString() }
+                                   };
+            var rollbarConfig = new RollbarConfig(accessToken) { Transform = transform, ProxyAddress = proxyAddress, Server = serverConfig };
 
             if (!string.IsNullOrWhiteSpace(environment))
             {
