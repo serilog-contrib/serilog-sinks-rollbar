@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 using Rollbar;
 using Rollbar.DTOs;
@@ -52,6 +53,12 @@ namespace Serilog
             _formatProvider = formatProvider;
 
             var rollbarConfig = new RollbarConfig(accessToken) { Transform = transform, ProxyAddress = proxyAddress };
+
+            rollbarConfig.Server = new Server
+            {
+                {Server.ReservedProperties.Host, Environment.MachineName},
+                {Server.ReservedProperties.CodeVersion, Assembly.GetEntryAssembly()?.GetName()?.Version?.ToString()}
+            };
 
             if (!string.IsNullOrWhiteSpace(environment))
             {
