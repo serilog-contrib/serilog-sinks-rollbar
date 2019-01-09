@@ -9,10 +9,10 @@
     <AssemblyName>Serilog.Sinks.RollbarCom</AssemblyName>
     
     <PackageId>Serilog.Sinks.RollbarCom</PackageId>
-    <PackageTags>serilog;rollbar;logging</PackageTags>
+    <PackageTags>serilog rollbar logging</PackageTags>
     <PackageReleaseNotes>https://github.com/olsh/serilog-sinks-rollbar/releases</PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/olsh/serilog-sinks-rollbar</PackageProjectUrl>
-    <PackageLicense>https://raw.githubusercontent.com/olsh/serilog-sinks-rollbar/master/LICENSE</PackageLicense>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/olsh/serilog-sinks-rollbar/master/LICENSE</PackageLicenseUrl>
     <PackageIconUrl>http://serilog.net/images/serilog-sink-nuget.png</PackageIconUrl>
 
     <RepositoryType>git</RepositoryType>
