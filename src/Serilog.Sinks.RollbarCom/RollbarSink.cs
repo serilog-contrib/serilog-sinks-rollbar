@@ -9,8 +9,6 @@ using Rollbar.DTOs;
 using Serilog.Core;
 using Serilog.Events;
 
-using Exception = System.Exception;
-
 namespace Serilog
 {
     /// <inheritdoc />
@@ -18,7 +16,9 @@ namespace Serilog
     {
         private readonly IFormatProvider _formatProvider;
 
-        private readonly Rollbar.ILogger _rollbar;
+        private readonly bool _asyncLogging;
+
+        private readonly TimeSpan _asyncLoggingTimeout;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="RollbarSink" /> class.
@@ -51,6 +51,8 @@ namespace Serilog
             }
 
             _formatProvider = formatProvider;
+            _asyncLogging = asyncLogging;
+            _asyncLoggingTimeout = asyncLoggingTimeout;
 
             var serverConfig = new Server
                                    {
@@ -69,44 +71,37 @@ namespace Serilog
                 rollbarConfig.ScrubFields = scrubFields;
             }
 
-            if (asyncLoggingTimeout == default(TimeSpan))
+            if (_asyncLoggingTimeout == default(TimeSpan))
             {
                 // ReSharper disable once ExceptionNotDocumented
-                asyncLoggingTimeout = TimeSpan.FromSeconds(30);
+                _asyncLoggingTimeout = TimeSpan.FromSeconds(30);
             }
 
-            var rollbar = RollbarFactory.CreateNew()
-                .Configure(rollbarConfig);
-            _rollbar = asyncLogging ? rollbar : rollbar.AsBlockingLogger(asyncLoggingTimeout);
+            RollbarLocator.RollbarInstance.Configure(rollbarConfig);
         }
 
         /// <inheritdoc />
         public void Emit(LogEvent logEvent)
         {
-            switch (logEvent.Level)
+            Func<ErrorLevel, object, IDictionary<string, object>, object> logMessageAction;
+            if (_asyncLogging)
             {
-                case LogEventLevel.Verbose:
-                case LogEventLevel.Debug:
-                    Log(_rollbar.Debug, _rollbar.Debug, logEvent);
-                    break;
-                case LogEventLevel.Information:
-                    Log(_rollbar.Info, _rollbar.Info, logEvent);
-                    break;
-                case LogEventLevel.Warning:
-                    Log(_rollbar.Warning, _rollbar.Warning, logEvent);
-                    break;
-                case LogEventLevel.Error:
-                    Log(_rollbar.Error, _rollbar.Error, logEvent);
-                    break;
-                case LogEventLevel.Fatal:
-                    Log(_rollbar.Critical, _rollbar.Critical, logEvent);
-                    break;
+                logMessageAction = RollbarLocator.RollbarInstance.Log;
             }
+            else
+            {
+                logMessageAction = RollbarLocator.RollbarInstance.AsBlockingLogger(_asyncLoggingTimeout)
+                    .Log;
+            }
+
+            var rollbarLevel = ToRollbarLevel(logEvent.Level);
+
+            Log(rollbarLevel, logMessageAction, logEvent);
         }
 
         private void Log(
-            Func<string, IDictionary<string, object>, Rollbar.ILogger> logMessage,
-            Func<Exception, IDictionary<string, object>, Rollbar.ILogger> logException,
+            ErrorLevel level,
+            Func<ErrorLevel, object, IDictionary<string, object>, object> logAction,
             LogEvent logEvent)
         {
             IDictionary<string, object> properties = null;
@@ -122,12 +117,20 @@ namespace Serilog
             var message = logEvent.RenderMessage(_formatProvider);
             if (logEvent.Exception == null)
             {
-                logMessage(message, properties);
+                if (!string.IsNullOrEmpty(message))
+                {
+                    logAction(level, message, properties);
+                }
             }
             else
             {
-                if (properties != null)
+                if (!string.IsNullOrEmpty(message))
                 {
+                    if (properties == null)
+                    {
+                        properties = new Dictionary<string, object>();
+                    }
+
                     const string MessageKey = "message";
                     properties.Add(
                         !properties.ContainsKey(MessageKey)
@@ -137,7 +140,27 @@ namespace Serilog
                         message);
                 }
 
-                logException(logEvent.Exception, properties);
+                logAction(level, logEvent.Exception, properties);
+            }
+        }
+
+        private ErrorLevel ToRollbarLevel(LogEventLevel level)
+        {
+            switch (level)
+            {
+                case LogEventLevel.Verbose:
+                case LogEventLevel.Debug:
+                    return ErrorLevel.Debug;
+                case LogEventLevel.Information:
+                    return ErrorLevel.Info;
+                case LogEventLevel.Warning:
+                    return ErrorLevel.Warning;
+                case LogEventLevel.Error:
+                    return ErrorLevel.Error;
+                case LogEventLevel.Fatal:
+                    return ErrorLevel.Critical;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(level), level, null);
             }
         }
     }

@@ -1,3 +1,7 @@
+#tool nuget:?package=MSBuild.SonarQube.Runner.Tool&version=4.3.1
+
+#addin nuget:?package=Cake.Sonar&version=1.1.18
+
 var target = Argument("target", "Default");
 var projectName = Argument("project", "Serilog.Sinks.RollbarCom");
 
@@ -22,7 +26,7 @@ Task("Build")
   .Does(() =>
 {
     DotNetCoreBuild(solutionFileName, new DotNetCoreBuildSettings {
-		Configuration = buildConfiguration
+        Configuration = buildConfiguration
     });
 });
 
@@ -46,6 +50,31 @@ Task("CreateArtifact")
 {
     BuildSystem.AppVeyor.UploadArtifact(string.Format("{0}.{1}.nupkg", projectName, extensionsVersion));
 });
+
+Task("SonarBegin")
+  .Does(() => {
+     SonarBegin(new SonarBeginSettings {
+        Url = "https://sonarcloud.io",
+        Login = EnvironmentVariable("sonar:apikey"),
+        Key = "serilog-sinks-rollbar",
+        Name = "Serilog.Sinks.RollbarCom",
+        ArgumentCustomization = args => args
+            .Append($"/o:olsh-github"),
+        Version = "1.0.0.0"
+     });
+  });
+
+Task("SonarEnd")
+  .Does(() => {
+     SonarEnd(new SonarEndSettings {
+        Login = EnvironmentVariable("sonar:apikey")
+     });
+  });
+
+Task("Sonar")
+  .IsDependentOn("SonarBegin")
+  .IsDependentOn("Build")
+  .IsDependentOn("SonarEnd");
 
 Task("Default")
     .IsDependentOn("NugetPack");
