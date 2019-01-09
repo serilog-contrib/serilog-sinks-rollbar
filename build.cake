@@ -81,6 +81,7 @@ Task("Default")
 
 Task("CI")
     .IsDependentOn("UpdateBuildVersion")
+    .IsDependentOn("Sonar")
     .IsDependentOn("CreateArtifact");
 
 RunTarget(target);
