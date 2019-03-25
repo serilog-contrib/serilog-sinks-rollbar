@@ -24,3 +24,26 @@ var log = new LoggerConfiguration()
 // By default, only messages with level errors and higher are captured
 log.Error("This error goes to Rollbar.");
 ```
+## Providing additional info
+
+### Person info
+
+[Rollbar docs person tracking](https://docs.rollbar.com/docs/person-tracking)
+
+```csharp
+.WriteTo.Rollbar("Post server access token", transform: payload => {
+    payload.Data.Person = new Person() {
+        Id = myId,
+        UserName = myUsername
+    };
+})
+```
+### Code version
+
+[Rollbar docs versions](https://docs.rollbar.com/docs/versions)
+
+```csharp
+.WriteTo.Rollbar("Post server access token", transform: payload => {
+    payload.Data.CodeVersion = myVersion;
+})
+```
