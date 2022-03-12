@@ -59,16 +59,15 @@ namespace Serilog
                                        { Server.ReservedProperties.Host, Environment.MachineName },
                                        { Server.ReservedProperties.CodeVersion, Assembly.GetEntryAssembly()?.GetName().Version?.ToString() }
                                    };
-            var rollbarConfig = new RollbarConfig(accessToken) { Transform = transform, ProxyAddress = proxyAddress, Server = serverConfig };
 
-            if (!string.IsNullOrWhiteSpace(environment))
-            {
-                rollbarConfig.Environment = environment;
-            }
+            var rollbarConfig = new RollbarLoggerConfig(accessToken, environment);
+            rollbarConfig.RollbarPayloadManipulationOptions.Reconfigure(new RollbarPayloadManipulationOptions(transform));
+            rollbarConfig.HttpProxyOptions.Reconfigure(new HttpProxyOptions(proxyAddress));
+            rollbarConfig.RollbarPayloadAdditionOptions.Server = serverConfig;
 
             if (scrubFields != null && scrubFields.Length > 0)
             {
-                rollbarConfig.ScrubFields = scrubFields;
+                rollbarConfig.RollbarDataSecurityOptions.Reconfigure(new RollbarDataSecurityOptions { ScrubFields = scrubFields });
             }
 
             if (_asyncLoggingTimeout == default(TimeSpan))
